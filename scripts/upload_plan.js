@@ -1,8 +1,7 @@
 module.exports = async (github, context) => {
-    console.log(process.env);
-
+    // console.log(process.env);
     // console.log('Test text');
-    // console.log(github);
+    console.log(github);
     // console.log(context);
     // Get pull requests that are open for current ref.
     const pullRequests = await github.rest.pulls.list({
