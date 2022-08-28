@@ -26,21 +26,20 @@ module.exports = async (github, context) => {
 
     // Prepare format of the comment
     const output = `#### Terraform Plan 📖\`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
-          <hr>
-
-          *Pusher: @${context.actor}*
-          // *Pusher: @${github.actor}*
-          *Action: \`${github.event_name}\`*
-          *Workflow: \`${github.workflow}\`*
-          *Commit: \`${github.sha}\`*
-
-          <details><summary>Show Plan</summary>
-
-          \`\`\`\n
-          ${process.env.TERRAFORM_PLAN}
-          \`\`\`
-
-          </details>`;
+    <hr>
+    
+    *Pusher: @${context.actor}*
+    *Action: \`${context.eventName}\`*
+    *Workflow: \`${context.workflow}\`*
+    *Commit: \`${context.sha}\`*
+    
+    <details><summary>Show Plan</summary>
+    
+    \`\`\`\n
+    ${process.env.TERRAFORM_PLAN}
+    \`\`\`
+    
+    </details>`;
 
     // If we have a comment, update it, otherwise create a new one
     if (botComment) {
