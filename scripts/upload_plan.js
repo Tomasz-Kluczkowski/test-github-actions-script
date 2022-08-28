@@ -28,7 +28,8 @@ module.exports = async (github, context) => {
     const output = `#### Terraform Plan 📖\`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
           <hr>
 
-          *Pusher: @${github.actor}*
+          *Pusher: @${context.actor}*
+          // *Pusher: @${github.actor}*
           *Action: \`${github.event_name}\`*
           *Workflow: \`${github.workflow}\`*
           *Commit: \`${github.sha}\`*
