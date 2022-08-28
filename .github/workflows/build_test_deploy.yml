@@ -13,10 +13,10 @@ jobs:
     - name: Store terraform plan in environment variable
       id: terraform-plan
       run: |
-        echo <<< EOF
+        echo << EOF > ${{ env.TERRAFORM_PLAN_FILE_NAME }}
         line 1 this is fake terraform plan
         line 2 of the plan
-        EOF >> ${{ env.TERRAFORM_PLAN_FILE_NAME }}
+        EOF
         
         echo "TERRAFORM_PLAN<<EOF" >> $GITHUB_ENV
         cat "${{ env.TERRAFORM_PLAN_FILE_NAME }}" >> $GITHUB_ENV
