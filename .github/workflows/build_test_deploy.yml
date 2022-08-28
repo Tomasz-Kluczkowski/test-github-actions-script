@@ -25,7 +25,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          console.log(process.env);
+          // console.log(process.env);
           // const terraformPlan = ${ env.TERRAFORM_PLAN }};
           // console.log(terraformPlan);
           // const terraformPlan = ${{ env.TERRAFORM_PLAN }}

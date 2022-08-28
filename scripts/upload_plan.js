@@ -1,4 +1,6 @@
 module.exports = async (github, context) => {
+    console.log(process.env);
+
     // console.log('Test text');
     // console.log(github);
     // console.log(context);
