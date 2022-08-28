@@ -19,7 +19,7 @@ jobs:
         EOF >> ${{ env.TERRAFORM_PLAN_FILE_NAME }}
         
         echo "TERRAFORM_PLAN<<EOF" >> $GITHUB_ENV
-        cat ${{ env.TERRAFORM_PLAN_FILE_NAME }} >> $GITHUB_ENV
+        cat "${{ env.TERRAFORM_PLAN_FILE_NAME }}" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
 
     - name: Post plan comment to pull request
