@@ -1,3 +1,24 @@
+// Prepare format of the comment
+const output = `
+#### Terraform Plan 📖 \`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
+
+<hr>
+
+*Pusher: @${context.actor}*
+*Action: \`${context.eventName}\`*
+*Workflow: \`${context.workflow}\`*
+*Commit: \`${context.sha}\`*
+
+<details><summary>Show Plan</summary>
+
+\`\`\`\n
+${process.env.TERRAFORM_PLAN}
+\`\`\`
+
+</details>
+`;
+
+
 module.exports = async (github, context) => {
     // console.log(process.env);
     // console.log('Test text');
@@ -25,23 +46,23 @@ module.exports = async (github, context) => {
     })
 
     // Prepare format of the comment
-    const output = `
-#### Terraform Plan 📖 \`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
-
-<hr>
-
-*Pusher: @${context.actor}*
-*Action: \`${context.eventName}\`*
-*Workflow: \`${context.workflow}\`*
-*Commit: \`${context.sha}\`*
-
-<details><summary>Show Plan</summary>
-
-\`\`\`\n
-${process.env.TERRAFORM_PLAN}
-\`\`\`
-
-</details>`;
+//     const output = `
+// #### Terraform Plan 📖 \`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
+//
+// <hr>
+//
+// *Pusher: @${context.actor}*
+// *Action: \`${context.eventName}\`*
+// *Workflow: \`${context.workflow}\`*
+// *Commit: \`${context.sha}\`*
+//
+// <details><summary>Show Plan</summary>
+//
+// \`\`\`\n
+// ${process.env.TERRAFORM_PLAN}
+// \`\`\`
+//
+// </details>`;
 
     // If we have a comment, update it, otherwise create a new one
     if (botComment) {
