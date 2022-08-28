@@ -27,11 +27,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          console.log(${{ steps.terraform-plan.outcome }});
           // console.log(process.env);
-          // const terraformPlan = ${ env.TERRAFORM_PLAN }};
-          // console.log(terraformPlan);
-          // const terraformPlan = ${{ env.TERRAFORM_PLAN }}
           const script = require('./scripts/upload_plan.js');
           await script(github, context);
 #          await script({github, context, ${{ steps.terraform-plan.outcome }}})
