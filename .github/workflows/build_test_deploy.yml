@@ -1,0 +1,270 @@
+name: Build test deploy
+on: [push]
+env:
+  TERRAFORM_PLAN_ARTIFACT_NAME: terraform_plan_artifact
+  TERRAFORM_PLAN_FILE_NAME: tf_plan
+  TERRAFORM_PLAN_STDOUT_FILE_NAME: tf_plan_stdout
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Store terraform plan in environment variable
+      run: |
+        echo "TERRAFORM_PLAN<<EOF" >> $GITHUB_ENV
+        echo "this is fake terraform plan\nline 2 of the plan" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    - name: Post plan comment to pull request
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // const terraformPlan = 'test terraform plan as a simple string'
+          // const terraformPlan = ${{ env.TERRAFORM_PLAN }}
+          const script = require('./scripts/upload_plan.js')
+          await script(github, context)
+#          await script({github, context, ${{ steps.terraform-plan.outcome }}})
+#        script: |
+#          // Get pull requests that are open for current ref.
+#          const pullRequests = await github.rest.pulls.list({
+#            owner: context.repo.owner,
+#            repo: context.repo.repo,
+#            state: 'open',
+#            head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
+#          })
+#
+#          // Set issue number for following calls from context (if on pull request event) or from above variable.
+#          const issueNumber = context.issue.number || pullRequests.data[0].number
+#
+#          // Retrieve existing bot comments for the PR
+#          const { data: comments } = await github.rest.issues.listComments({
+#            owner: context.repo.owner,
+#            repo: context.repo.repo,
+#            issue_number: issueNumber,
+#          })
+#          const botComment = comments.find(comment => {
+#            return comment.user.type === 'Bot' && comment.body.includes('Terraform Plan')
+#          })
+#
+#          // Prepare format of the comment
+#          const output = `#### Terraform Plan 📖\`${{ steps.terraform-plan.outcome }}\`
+#          <hr>
+#
+#          *Pusher: @${{ github.actor }}*
+#          *Action: \`${{ github.event_name }}\`*
+#          *Workflow: \`${{ github.workflow }}\`*
+#          *Commit: \`${{ github.sha }}\`*
+#
+#          <details><summary>Show Plan</summary>
+#
+#          \`\`\`\n
+#          ${{ env.TERRAFORM_PLAN }}
+#          \`\`\`
+#
+#          </details>`;
+#
+#          // If we have a comment, update it, otherwise create a new one
+#          if (botComment) {
+#            github.rest.issues.updateComment({
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              comment_id: botComment.id,
+#              body: output
+#            })
+#          } else {
+#            github.rest.issues.createComment({
+#              issue_number: issueNumber,
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              body: output
+#            })
+#          }
+#
+
+    - name: Upload terraform plan artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.TERRAFORM_PLAN_ARTIFACT_NAME }}
+        path: |
+          terraform/${{ env.TERRAFORM_PLAN_FILE_NAME }}
+
+  # TODO: disable this job on master branch
+#  terraform-post-plan-pr-comment:
+#    runs-on: ubuntu-latest
+#    needs: [ terraform-plan ]
+##    env:
+##      PLAN: "${{ needs.terraform-plan.outputs.terraform_plan_stdout }}"
+#    steps:
+#    - name: Download terraform plan artifact
+#      uses: actions/download-artifact@v3
+#      with:
+#        name: ${{ env.TERRAFORM_PLAN_ARTIFACT_NAME }}
+#
+#    - name: Test original file content
+#      run: cat ${{ env.TERRAFORM_PLAN_STDOUT_FILE_NAME }}
+#
+#    - name: Set environment variables
+#      run: |
+#        echo 'PLAN<<EOF' >> $GITHUB_ENV
+#        cat ${{ env.TERRAFORM_PLAN_STDOUT_FILE_NAME }} >> $GITHUB_ENV
+#        echo 'EOF' >> $GITHUB_ENV
+#
+#    - name: Test env var was set
+#      run: echo "${{ env.PLAN }}"
+#
+#    - uses: actions/github-script@v6
+#      with:
+#        github-token: ${{ secrets.GITHUB_TOKEN }}
+#        script: |
+#          // Get pull requests that are open for current ref.
+#          const pullRequests = await github.rest.pulls.list({
+#            owner: context.repo.owner,
+#            repo: context.repo.repo,
+#            state: 'open',
+#            head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
+#          })
+#
+#          // Set issue number for following calls from context (if on pull request event) or from above variable.
+#          const issueNumber = context.issue.number || pullRequests.data[0].number
+#
+#          // Retrieve existing bot comments for the PR
+#          const { data: comments } = await github.rest.issues.listComments({
+#            owner: context.repo.owner,
+#            repo: context.repo.repo,
+#            issue_number: issueNumber,
+#          })
+#          const botComment = comments.find(comment => {
+#            return comment.user.type === 'Bot' && comment.body.includes('Terraform Plan')
+#          })
+#
+#          // Prepare format of the comment
+#          const output = `#### Terraform Plan 📖\`${{ needs.terraform-plan.result }}\`
+#          <hr>
+#
+#          *Pusher: @${{ github.actor }}*
+#          *Action: \`${{ github.event_name }}\`*
+#          *Workflow: \`${{ github.workflow }}\`*
+#          *Commit: \`${{ github.sha }}\`*
+#
+#          <details><summary>Show Plan</summary>
+#
+#          \`\`\`\n
+#          ${process.env.PLAN}
+#          \`\`\`
+#
+#          </details>`;
+#
+#          // If we have a comment, update it, otherwise create a new one
+#          if (botComment) {
+#            github.rest.issues.updateComment({
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              comment_id: botComment.id,
+#              body: output
+#            })
+#          } else {
+#            github.rest.issues.createComment({
+#              issue_number: issueNumber,
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              body: output
+#            })
+#          }
+
+#  terraform-apply:
+#    runs-on: ubuntu-latest
+#    needs: [terraform-plan]
+#    if: |
+#      github.ref == 'refs/heads/master' &&
+#      needs.terraform-plan.outputs.terraform_changes_detected == 'true'
+#    defaults:
+#      run:
+#        working-directory: ./terraform
+#    env:
+#      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+#      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+#      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+#      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+#
+#    steps:
+#    - uses: actions/checkout@v2
+#
+#    - uses: hashicorp/setup-terraform@v2
+#      with:
+#        terraform_version: 1.2.5
+#
+#    - name: Download terraform plan
+#      uses: actions/download-artifact@v3
+#      with:
+#        name: ${{ env.TERRAFORM_PLAN_ARTIFACT_NAME }}
+#
+#    - name: Terraform init
+#      run: terraform init
+#
+#    - name: Terraform Apply
+#      id: terraform-apply
+#      run: terraform apply "${TERRAFORM_PLAN_FILE_NAME}"
+
+#  provision-app:
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/master'
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Build and push app image without dev dependencies
+#        uses: azure/docker-login@v1
+#        with:
+#          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+#          username: ${{ secrets.REGISTRY_USERNAME }}
+#          password: ${{ secrets.REGISTRY_PASSWORD }}
+#      - run: |
+#          docker build . -t $AZURE_INFRASTRUCTURE_COSTS_IMAGE_REPOSITORY:$IMAGE_TAG
+#          docker push $AZURE_INFRASTRUCTURE_COSTS_IMAGE_REPOSITORY:$IMAGE_TAG
+
+#  deploy-app:
+#    runs-on: ubuntu-latest
+#    needs: [tests, acceptance-tests, provision-app, terraform-apply]
+#    if: |
+#      github.ref == 'refs/heads/master' &&
+#      !contains(needs.*.result, 'failure') &&
+#      !contains(needs.*.result, 'cancelled')
+#    env:
+#      HELM_DEPLOYMENT_SECRET_FILE_NAME: helm_deployment_secret.yaml
+#      KUBECONFIG_FILE_NAME: .kubeconfig
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Log in to azure acr
+#        uses: azure/docker-login@v1
+#        with:
+#          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+#          username: ${{ secrets.REGISTRY_USERNAME }}
+#          password: ${{ secrets.REGISTRY_PASSWORD }}
+#
+#      - name: Install Helm 3
+#        uses: azure/setup-helm@v1
+#        with:
+#          version: 3.9.0
+#        id: install
+#
+#      - name: Create deployment secrets
+#        shell: bash
+#        run: |
+#          echo "${{ secrets.HELM_DEPLOYMENT_SECRET }}" >> $HELM_DEPLOYMENT_SECRET_FILE_NAME
+#          echo "${{ secrets.KUBECONFIG }}" >> $KUBECONFIG_FILE_NAME
+#          chmod 600 $KUBECONFIG_FILE_NAME
+#
+#      - name: Deploy application via Helm
+#        run: |
+#          helm upgrade azure-infrastructure-costs ./helm_deployment/azure_infrastructure_costs \
+#          --install --atomic --wait-for-jobs \
+#          --kubeconfig ./$KUBECONFIG_FILE_NAME \
+#          --namespace azure-infrastructure-costs  --create-namespace \
+#          -f ./$HELM_DEPLOYMENT_SECRET_FILE_NAME \
+#          --set-string image.tag=$IMAGE_TAG
