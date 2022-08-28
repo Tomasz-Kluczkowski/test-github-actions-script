@@ -25,9 +25,11 @@ module.exports = async (github, context) => {
     })
 
     // Prepare format of the comment
-    const output = `#### Terraform Plan 📖\`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
+    const output = `
+    #### Terraform Plan 📖 \`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
+
     <hr>
-    
+
     *Pusher: @${context.actor}*
     *Action: \`${context.eventName}\`*
     *Workflow: \`${context.workflow}\`*
