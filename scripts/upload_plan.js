@@ -1,5 +1,7 @@
 module.exports = async (github, context) => {
     console.log('Test text');
+    console.log(github);
+    console.log(context);
     // Get pull requests that are open for current ref.
     // const pullRequests = await github.rest.pulls.list({
     //     owner: context.repo.owner,
