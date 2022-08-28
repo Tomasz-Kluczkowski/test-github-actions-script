@@ -23,7 +23,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const terraformPlan = 'test terraform plan as a simple string';
+          const terraformPlan = ${{ env.TERRAFORM_PLAN }};
           console.log(terraformPlan);
           // const terraformPlan = ${{ env.TERRAFORM_PLAN }}
           const script = require('./scripts/upload_plan.js');
