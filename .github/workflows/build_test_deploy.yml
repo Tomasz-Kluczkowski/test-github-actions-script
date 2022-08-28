@@ -23,10 +23,11 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          // const terraformPlan = 'test terraform plan as a simple string'
+          const terraformPlan = 'test terraform plan as a simple string';
+          console.log(terraformPlan);
           // const terraformPlan = ${{ env.TERRAFORM_PLAN }}
-          const script = require('./scripts/upload_plan.js')
-          await script(github, context)
+          const script = require('./scripts/upload_plan.js');
+          await script(github, context);
 #          await script({github, context, ${{ steps.terraform-plan.outcome }}})
 #        script: |
 #          // Get pull requests that are open for current ref.
