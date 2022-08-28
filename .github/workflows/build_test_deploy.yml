@@ -23,6 +23,7 @@ jobs:
       uses: actions/github-script@v6
       env:
         TERRAFORM_PLAN: ${{ env.TERRAFORM_PLAN }}
+        TERRAFORM_PLAN_STEP_OUTCOME: ${{ steps.terraform-plan.outcome }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

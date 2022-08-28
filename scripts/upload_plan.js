@@ -26,8 +26,7 @@ module.exports = async (github, context) => {
     })
 
     // Prepare format of the comment
-    // const output = `#### Terraform Plan 📖\`${outcome}\`
-    const output = `#### Terraform Plan 📖
+    const output = `#### Terraform Plan 📖\`${process.env.TERRAFORM_PLAN_STEP_OUTCOME}\`
           <hr>
 
           *Pusher: @${github.actor}*
