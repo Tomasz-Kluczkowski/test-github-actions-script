@@ -38,7 +38,7 @@ module.exports = async (github, context) => {
           <details><summary>Show Plan</summary>
 
           \`\`\`\n
-          Placeholder for terraform plan here
+          ${process.env.TERRAFORM_PLAN}
           \`\`\`
 
           </details>`;

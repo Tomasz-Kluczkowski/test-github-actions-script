@@ -13,6 +13,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Store terraform plan in environment variable
+      id: terraform-plan
       run: |
         echo "TERRAFORM_PLAN<<EOF" >> $GITHUB_ENV
         echo "this is fake terraform plan\nline 2 of the plan" >> $GITHUB_ENV
@@ -25,6 +26,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
+          console.log(${{ steps.terraform-plan.outcome }});
           // console.log(process.env);
           // const terraformPlan = ${ env.TERRAFORM_PLAN }};
           // console.log(terraformPlan);
