@@ -15,7 +15,7 @@ jobs:
       run: |
         cat  >> ${{ env.TERRAFORM_PLAN_FILE_NAME }} <<EOF
         line 1 this is fake terraform plan
-        line 2 of the plan
+        line 2 of the plan - modified
         EOF
         
         echo "TERRAFORM_PLAN<<EOF" >> $GITHUB_ENV
